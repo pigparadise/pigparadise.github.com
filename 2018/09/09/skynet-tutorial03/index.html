@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Skynet," />
 
 
 
@@ -81,13 +81,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="pigparadise&#39;s blog">
-<meta property="og:url" content="https://pigparadise.github.io/index.html">
+<meta name="description" content="本篇主要内容 讲解使用Skynet中逻辑挂起，恢复，以及坑点  建议提前掌握的知识 Lua协程  什么是挂起简单的来说，就是代码的逻辑可以暂停，直到被唤醒，然后接着暂停时逻辑继续执行。 Call的设计在上一章我们讲到service之间的消息发送方式有两种，分别是call和send。 send的设计没什么选择，基本就是发目标一个消息，然后不关心返回值，继续做自己的逻辑。 call的设计就有两种了:">
+<meta name="keywords" content="Skynet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="skynet-tutorial03">
+<meta property="og:url" content="https://pigparadise.github.io/2018/09/09/skynet-tutorial03/index.html">
 <meta property="og:site_name" content="pigparadise&#39;s blog">
+<meta property="og:description" content="本篇主要内容 讲解使用Skynet中逻辑挂起，恢复，以及坑点  建议提前掌握的知识 Lua协程  什么是挂起简单的来说，就是代码的逻辑可以暂停，直到被唤醒，然后接着暂停时逻辑继续执行。 Call的设计在上一章我们讲到service之间的消息发送方式有两种，分别是call和send。 send的设计没什么选择，基本就是发目标一个消息，然后不关心返回值，继续做自己的逻辑。 call的设计就有两种了:">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-09T08:06:36.149Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="pigparadise&#39;s blog">
+<meta name="twitter:title" content="skynet-tutorial03">
+<meta name="twitter:description" content="本篇主要内容 讲解使用Skynet中逻辑挂起，恢复，以及坑点  建议提前掌握的知识 Lua协程  什么是挂起简单的来说，就是代码的逻辑可以暂停，直到被唤醒，然后接着暂停时逻辑继续执行。 Call的设计在上一章我们讲到service之间的消息发送方式有两种，分别是call和send。 send的设计没什么选择，基本就是发目标一个消息，然后不关心返回值，继续做自己的逻辑。 call的设计就有两种了:">
 
 
 
@@ -117,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="https://pigparadise.github.io/"/>
+  <link rel="canonical" href="https://pigparadise.github.io/2018/09/09/skynet-tutorial03/"/>
 
 
 
 
 
-  <title>pigparadise's blog</title>
+  <title>skynet-tutorial03 | pigparadise's blog</title>
   
 
 
@@ -142,8 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -246,9 +250,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -278,9 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/09/skynet-tutorial03/" itemprop="url">skynet-tutorial03</a></h1>
+          <h1 class="post-title" itemprop="name headline">skynet-tutorial03</h1>
         
 
         <div class="post-meta">
@@ -341,9 +343,7 @@
       
 
       
-        
-          
-            <h1 id="本篇主要内容"><a href="#本篇主要内容" class="headerlink" title="本篇主要内容"></a>本篇主要内容</h1><ul>
+        <h1 id="本篇主要内容"><a href="#本篇主要内容" class="headerlink" title="本篇主要内容"></a>本篇主要内容</h1><ul>
 <li>讲解使用Skynet中逻辑挂起，恢复，以及坑点</li>
 </ul>
 <h1 id="建议提前掌握的知识"><a href="#建议提前掌握的知识" class="headerlink" title="建议提前掌握的知识"></a>建议提前掌握的知识</h1><ul>
@@ -376,8 +376,6 @@
 <li>skynet.wait和skynet.wakeup分别是触发当然协程挂起和唤醒指定协程的接口，用这两个方法写一个协程级别的锁(可用于多个协程的挂起逻辑保序)</li>
 </ul>
 
-          
-        
       
     </div>
     
@@ -392,342 +390,36 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://pigparadise.github.io/2017/08/27/skynet-tutorial01/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="pigparadise">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="pigparadise's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/27/skynet-tutorial01/" itemprop="url">Skynet Tutorial01:Service的基础操作</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-27T11:21:06+08:00">
-                2017-08-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Skynet/" itemprop="url" rel="index">
-                    <span itemprop="name">Skynet</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/Skynet/" rel="tag"># Skynet</a>
           
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/08/27/skynet-tutorial01/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/08/27/skynet-tutorial01/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          <hr>
-<h1 id="关于本教程"><a href="#关于本教程" class="headerlink" title="关于本教程"></a>关于本教程</h1><p>用Skynet也有一段时间了，最近客户端同事颜老师突然想学，之前他并没接触过服务端编程，觉得还是花时间写个针对纯新手的教程好了，也算是对自己近几年工作的一种总结，希望带大家入个门。</p>
-<h1 id="本篇主要内容"><a href="#本篇主要内容" class="headerlink" title="本篇主要内容"></a>本篇主要内容</h1><ul>
-<li>学习前需要掌握的基础知识和工具</li>
-<li>介绍Skynet的消息模型以及相关资料</li>
-<li>服务的启动，配置和基本控制台操作</li>
-</ul>
-<h1 id="一些需要掌握的工具和概念"><a href="#一些需要掌握的工具和概念" class="headerlink" title="一些需要掌握的工具和概念"></a>一些需要掌握的工具和概念</h1><ul>
-<li>Linux基础命令行操作</li>
-<li>Git</li>
-<li>编程语言Lua和C</li>
-<li>进程，线程，协程</li>
-<li>Actor模型</li>
-</ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/27/skynet-tutorial01/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/27/skynet-tutorial01/" rel="next" title="Skynet Tutorial01:Service的基础操作">
+                <i class="fa fa-chevron-left"></i> Skynet Tutorial01:Service的基础操作
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
 
-    
+          <span class="post-nav-divider"></span>
 
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://pigparadise.github.io/2017/08/27/skynet-tutorial02/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="pigparadise">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="pigparadise's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/27/skynet-tutorial02/" itemprop="url">Skynet Tutorial02:Service的基础操作</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+          <div class="post-nav-prev post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-27T10:57:28+08:00">
-                2017-08-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Skynet/" itemprop="url" rel="index">
-                    <span itemprop="name">Skynet</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/08/27/skynet-tutorial02/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/08/27/skynet-tutorial02/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <h1 id="创建与销毁"><a href="#创建与销毁" class="headerlink" title="创建与销毁"></a>创建与销毁</h1><p>在<a href="https://github.com/pigparadise/SkynetTutorial/tree/master/projects/hello_world" target="_blank" rel="noopener">projects/hello_world</a>中，我们在配置文件指定了<a href="https://github.com/pigparadise/SkynetTutorial/blob/master/projects/hello_world/config.lua#L6" target="_blank" rel="noopener">主入口服务</a>，类似main函数，一般会通过它来启动其他的service。接下来我们来分析下它的代码：</p>
-<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> Skynet = <span class="built_in">require</span> <span class="string">"skynet"</span></span><br><span class="line"><span class="keyword">local</span> Log = <span class="built_in">require</span> <span class="string">"log"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">__init__</span><span class="params">()</span></span></span><br><span class="line">    Skynet.newservice(<span class="string">'debug_console'</span>, Skynet.<span class="built_in">getenv</span>(<span class="string">"CONSOLE_PORT"</span>))</span><br><span class="line">    Skynet.newservice(<span class="string">'hello_world'</span>)</span><br><span class="line">    Skynet.<span class="built_in">exit</span>()</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">Skynet.start(__init__)</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/08/27/skynet-tutorial02/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -737,10 +429,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -748,6 +441,20 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
 
         </div>
         
@@ -768,8 +475,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -840,6 +556,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#本篇主要内容"><span class="nav-number">1.</span> <span class="nav-text">本篇主要内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#建议提前掌握的知识"><span class="nav-number">2.</span> <span class="nav-text">建议提前掌握的知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是挂起"><span class="nav-number">3.</span> <span class="nav-text">什么是挂起</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Call的设计"><span class="nav-number">4.</span> <span class="nav-text">Call的设计</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Lua协程中的挂起与唤醒"><span class="nav-number">5.</span> <span class="nav-text">Lua协程中的挂起与唤醒</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#坑就在脚下"><span class="nav-number">6.</span> <span class="nav-text">坑就在脚下</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一个例子"><span class="nav-number">6.1.</span> <span class="nav-text">第一个例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二个例子"><span class="nav-number">6.2.</span> <span class="nav-text">第二个例子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编程挑战-欢迎你留言和我讨论"><span class="nav-number">7.</span> <span class="nav-text">编程挑战(欢迎你留言和我讨论)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -973,6 +705,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -990,6 +726,18 @@
       <script id="dsq-count-scr" src="https://pigparadise.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://pigparadise.github.io/2018/09/09/skynet-tutorial03/';
+          this.page.identifier = '2018/09/09/skynet-tutorial03/';
+          this.page.title = 'skynet-tutorial03';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pigparadise.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   
